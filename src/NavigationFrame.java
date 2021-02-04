@@ -2,10 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import javax.swing.JFrame;
-
-
 
 /**
  * This class implements the GUI for the navigation of the graph and handles the listeners
@@ -14,9 +11,7 @@ import javax.swing.JFrame;
  *
  */
 public class NavigationFrame extends JFrame {
-	//Graph<String,Node> graph;
-	//ArrayList<Node> nodes;
-	//ArrayList<Edge> edges;
+	Graph<String,Graph.Node> graph;
 
 	/**
 	 * Auto Generated serialVersionUID
@@ -39,5 +34,4 @@ public class NavigationFrame extends JFrame {
 		this.requestFocus();
 		super.repaint();
 	}
-
 }
