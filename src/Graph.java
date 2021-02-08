@@ -1,7 +1,8 @@
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.swing.JButton;
 
@@ -47,11 +48,24 @@ public class Graph<T> {
 		private double speedLimit;
 		private College c1;
 		private College c2;
+		private int x1;
+		private int x2;
+		private int y1;
+		private int y2;
 		
 		public Edge(College c1, College c2, double speedLimit) {
 			this.c1 = c1;
 			this.c2 = c2;
 			this.speedLimit = speedLimit;
+			this.x1 = c1.x;
+			this.x2 = c2.x;
+			this.y1 = c1.y;
+			this.y2 = c2.y;
+		}
+		
+		public void paint(Graphics2D g2d) {
+			g2d.setColor(Color.BLACK);
+			g2d.drawLine(x1, y1, x2, y2);
 		}
 	}
 }
