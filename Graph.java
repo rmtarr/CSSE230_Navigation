@@ -3,6 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 import javax.swing.JButton;
 
@@ -38,6 +39,13 @@ public class Graph<T> {
 			College other = colleges.get(otherCollege);
 			edges.add(new Edge(this, other, speedLimit));
 		}
+		
+		public int straightDistance(College otherCollege) {
+			int x = this.x - otherCollege.x;
+			int y = this.y - otherCollege.y;
+			return (int)Math.sqrt(x*x - y*y);
+		}
+	
 	}
 	
 	/**
@@ -68,4 +76,30 @@ public class Graph<T> {
 			g2d.drawLine(x1, y1, x2, y2);
 		}
 	}
+	
+	public class Path {
+		
+		private College college;
+		private int distance;
+		
+		public Path(College c, int d) {
+			college = c;
+			distance = d;
+		}
+	}
+	
+	/**
+	 * A* search algorithm for shortest path
+	 * 
+	 * @param start
+	 * @param finish
+	 * @return
+	 */
+	public ArrayList<Edge> shortestPath(College start, College finish) {
+		PriorityQueue<Path> q = new PriorityQueue<>();
+		q.add(new Path(finish, finish.straightDistance(finish)));
+		
+		return null;
+	}
+
 }
