@@ -45,7 +45,6 @@ public class Graph<T> {
 			int y = this.y - otherCollege.y;
 			return (int)Math.sqrt(x*x - y*y);
 		}
-	
 	}
 	
 	/**

@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 /**
@@ -12,7 +15,7 @@ public class Main
 {
 	private JFrame frame;
 
-	Main()
+	Main() throws IOException
 	{
 		frame = new NavigationFrame();
 		frame.setTitle("College Navigator");
@@ -21,7 +24,7 @@ public class Main
 		frame.setVisible(true);
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		new Main();
 	}
