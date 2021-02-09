@@ -8,12 +8,21 @@ import java.util.PriorityQueue;
 import javax.swing.JButton;
 
 public class Graph<T> {
-	HashMap<T,College> colleges;
-	ArrayList<Edge> edges;
+	private HashMap<T,College> colleges;
+	private ArrayList<Edge> edges;
 	
 	public Graph() {
 		colleges = new HashMap<T,College>();
 		edges = new ArrayList<Edge>();
+	}
+	
+	public void addCollege(T name, int x, int y) {
+		colleges.put(name, new College(name,x,y));
+	}
+	
+	public void paint(Graphics2D g2d) {
+		for(Edge e : edges) e.paint(g2d);
+		for(College c : colleges.values()) c.paint(g2d);
 	}
 	
 	/**
@@ -45,6 +54,11 @@ public class Graph<T> {
 			int y = this.y - otherCollege.y;
 			return (int)Math.sqrt(x*x - y*y);
 		}
+		
+		private void paint(Graphics2D g2d) {
+			g2d.setColor(Color.BLACK);
+			g2d.fillOval(x-5, y-5, 10, 10);
+		}
 	}
 	
 	/**
@@ -59,6 +73,7 @@ public class Graph<T> {
 		private int x2;
 		private int y1;
 		private int y2;
+		private boolean isVisible;
 		
 		public Edge(College c1, College c2, double speedLimit) {
 			this.c1 = c1;
@@ -68,11 +83,14 @@ public class Graph<T> {
 			this.x2 = c2.x;
 			this.y1 = c1.y;
 			this.y2 = c2.y;
+			this.isVisible = false;
 		}
 		
-		public void paint(Graphics2D g2d) {
-			g2d.setColor(Color.BLACK);
-			g2d.drawLine(x1, y1, x2, y2);
+		private void paint(Graphics2D g2d) {
+			if(isVisible) {
+				g2d.setColor(Color.BLACK);
+				g2d.drawLine(x1, y1, x2, y2);
+			}
 		}
 	}
 	
@@ -100,5 +118,4 @@ public class Graph<T> {
 		
 		return null;
 	}
-
 }

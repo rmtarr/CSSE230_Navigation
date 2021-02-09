@@ -7,7 +7,10 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,9 +26,7 @@ public class NavigationFrame extends JFrame {
 	private BufferedImage indiana;
 	private Dimension screenSize;
 
-	/**
-	 * Auto Generated serialVersionUID
-	 */
+	/** Auto Generated serialVersionUID */
 	private static final long serialVersionUID = 1185712731956834898L;
 
 	public NavigationFrame() throws IOException {
@@ -36,6 +37,25 @@ public class NavigationFrame extends JFrame {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBackground(Color.darkGray);
 		this.add(infoPanel,BorderLayout.EAST);
+		
+		graph = new Graph<String>();
+		importColleges();
+	}
+	
+	private void importColleges() throws FileNotFoundException {
+		Scanner s = new Scanner(new File("lib/colleges.csv"));
+		ArrayList<String> lines = new ArrayList<String>();
+		
+		while(s.hasNext()) lines.add(s.next());
+		
+		for(int i = 0;i<lines.size();i++) {
+			String str[] = lines.get(i).split(",");
+			String name = str[0];
+			int x = Integer.parseInt(str[1]);
+			int y = Integer.parseInt(str[2]);
+			graph.addCollege(name, x, y);
+		}
+		s.close();
 	}
 	
 	@Override
@@ -51,6 +71,10 @@ public class NavigationFrame extends JFrame {
 		g2d.drawImage(indiana, 0, 20, 
 				(int) ((screenSize.getHeight()/indiana.getHeight())*indiana.getWidth()), 
 				(int) (screenSize.getHeight()), null);
+		
+		//Paint the graph
+		g2d.translate(300, 400);
+		graph.paint(g2d);
 	}
 	
 	@Override
