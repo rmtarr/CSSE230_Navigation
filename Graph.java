@@ -40,10 +40,17 @@ public class Graph<T> {
 			edges.add(new Edge(this, other, speedLimit));
 		}
 		
-		public int straightDistance(College otherCollege) {
+		public int straightLineDistance(College otherCollege) {
 			int x = this.x - otherCollege.x;
 			int y = this.y - otherCollege.y;
 			return (int)Math.sqrt(x*x - y*y);
+		}
+		
+		public void aStarSearch(PriorityQueue<Path> q) {
+			for (Edge e : edges) {
+				College c = (this != e.getCollege1()) ? e.getCollege1() : e.getCollege2();
+				int distanceToCollege = straightLineDistance(c);
+			}
 		}
 	}
 	
@@ -74,16 +81,30 @@ public class Graph<T> {
 			g2d.setColor(Color.BLACK);
 			g2d.drawLine(x1, y1, x2, y2);
 		}
+		
+		public College getCollege1() {
+			return c1;
+		}
+		
+		public College getCollege2() {
+			return c2;
+		}
 	}
 	
 	public class Path {
 		
 		private College college;
-		private int distance;
+		private int distanceTraveled;
+		private int distanceLeft;
 		
-		public Path(College c, int d) {
-			college = c;
-			distance = d;
+		public Path(College college, int distanceTraveled, int distanceLeft) {
+			this.college = college;
+			this.distanceTraveled = distanceTraveled;
+			this.distanceLeft = distanceLeft;
+		}
+		
+		public int getDistanceTraveled() {
+			return this.distanceTraveled;
 		}
 	}
 	
@@ -96,7 +117,8 @@ public class Graph<T> {
 	 */
 	public ArrayList<Edge> shortestPath(College start, College finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		q.add(new Path(finish, finish.straightDistance(finish)));
+		q.add(new Path(start, 0, start.straightLineDistance(finish)));
+		start.aStarSearch(q);
 		
 		return null;
 	}
