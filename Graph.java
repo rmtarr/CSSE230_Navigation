@@ -3,17 +3,24 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import javax.swing.JButton;
 
-public class Graph<T> {
+public class Graph <T extends Comparable<? super T>> implements Iterable<T> {
 	HashMap<T,College> colleges;
 	ArrayList<Edge> edges;
 	
 	public Graph() {
 		colleges = new HashMap<T,College>();
 		edges = new ArrayList<Edge>();
+	}
+	
+	public Iterator<T> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**
@@ -45,13 +52,6 @@ public class Graph<T> {
 			int y = this.y - otherCollege.y;
 			return (int)Math.sqrt(x*x - y*y);
 		}
-		
-		public void aStarSearch(PriorityQueue<Path> q) {
-			for (Edge e : edges) {
-				College c = (this != e.getCollege1()) ? e.getCollege1() : e.getCollege2();
-				int distanceToCollege = straightLineDistance(c);
-			}
-		}
 	}
 	
 	/**
@@ -82,29 +82,43 @@ public class Graph<T> {
 			g2d.drawLine(x1, y1, x2, y2);
 		}
 		
-		public College getCollege1() {
-			return c1;
-		}
-		
-		public College getCollege2() {
-			return c2;
-		}
 	}
 	
-	public class Path {
+	public class Path implements Comparable<Path> {
 		
 		private College college;
+		private College goal;
+		private Path parent;
 		private int distanceTraveled;
-		private int distanceLeft;
+		private int cost;
 		
-		public Path(College college, int distanceTraveled, int distanceLeft) {
-			this.college = college;
+		public Path(Path parent, College current, College goal, int distanceTraveled) {
+			this.parent = parent;
+			this.college = current;
+			this.goal = goal;
 			this.distanceTraveled = distanceTraveled;
-			this.distanceLeft = distanceLeft;
+			this.cost = college.straightLineDistance(goal) + this.distanceTraveled;
 		}
 		
-		public int getDistanceTraveled() {
-			return this.distanceTraveled;
+		public void aStarSearch(PriorityQueue<Path> q, HashSet<College> visitedNodes) {
+			College c;
+			Path child;
+			for (Edge e : college.edges) {
+				c = (college != e.c1) ? e.c1 : e.c2;
+				if (!visitedNodes.contains(c) && c!= parent.college) {
+					int distanceToCollege = college.straightLineDistance(c);
+					child = new Path(this, c, goal, distanceToCollege + distanceTraveled);
+					q.add(child);
+				}
+			}
+			Path next = q.poll();
+			
+			next.aStarSearch(q, visitedNodes);
+		}
+		
+		public int compareTo(Path other) {
+			if (this.cost == other.cost) return 0;
+			return (this.cost > other.cost) ? 1 : -1;
 		}
 	}
 	
@@ -115,10 +129,12 @@ public class Graph<T> {
 	 * @param finish
 	 * @return
 	 */
-	public ArrayList<Edge> shortestPath(College start, College finish) {
+	public ArrayList<College> shortestPath(College start, College finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		q.add(new Path(start, 0, start.straightLineDistance(finish)));
-		start.aStarSearch(q);
+		HashSet<College> visitedNodes = new HashSet<>();
+		Path begin = new Path(null, start, finish, 0);
+		q.add(begin);
+		begin.aStarSearch(q, visitedNodes);
 		
 		return null;
 	}
