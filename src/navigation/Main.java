@@ -1,3 +1,5 @@
+package navigation;
+
 import java.awt.Color;
 import java.io.IOException;
 
