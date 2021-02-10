@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -35,10 +36,14 @@ public class NavigationFrame extends JFrame {
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setMinimumSize(screenSize);
 		indiana = ImageIO.read(new File("pics/indiana.png"));
+		String[] strar = {"RHIT","ISU","IU"};
+		
 		
 		JPanel infoPanel = new JPanel();
-		infoPanel.setBackground(Color.darkGray);
+		JComboBox c = new JComboBox(strar);
+		infoPanel.setBackground(Color.GREEN);
 		this.add(infoPanel,BorderLayout.EAST);
+		infoPanel.add(c);
 		
 		graph = new Graph<String>();
 		importColleges();
