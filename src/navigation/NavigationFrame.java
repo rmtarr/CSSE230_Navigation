@@ -80,7 +80,7 @@ public class NavigationFrame extends JFrame {
 				(int) (screenSize.getHeight()), null);
 		
 		//Paint the graph
-		g2d.translate(350, 500);
+		g2d.translate(350, 550);
 		graph.paint(g2d);
 	}
 	
