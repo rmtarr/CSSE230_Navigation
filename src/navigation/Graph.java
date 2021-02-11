@@ -67,6 +67,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		private void paint(Graphics2D g2d) {
 			g2d.setColor(Color.BLACK);
 			g2d.fillOval(x-5, y-5, 10, 10);
+			g2d.drawString((String) this.name, x+5, y-10);
 		}
 	}
 	
