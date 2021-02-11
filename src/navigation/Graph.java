@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import javax.swing.JButton;
 
@@ -23,9 +24,23 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		colleges.put(name, new College(name,x,y));
 	}
 	
+	public boolean addEdge(T c1, T c2, int speedLimit) {
+		if (!colleges.containsKey(c1) && !colleges.containsKey(c2)) return false;
+		colleges.get(c1).addEdge(c2, speedLimit);
+		colleges.get(c2).addEdge(c1, speedLimit);
+	    return true;
+	}
+	
+	// add LinkedList<Path> path as a parameter- this will be returned from shortestPath method
 	public void paint(Graphics2D g2d) {
-		for(Edge e : edges) e.paint(g2d);
 		for(College c : colleges.values()) c.paint(g2d);
+//		paintPath(g2d, path);
+	}
+	
+	public void paintPath(Graphics2D g2d, LinkedList<Path> path) {
+		// TODO
+		
+		
 	}
 	
 	@Override
@@ -55,7 +70,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		
 		public void addEdge(T otherCollege, double speedLimit) {
 			College other = colleges.get(otherCollege);
-			edges.add(new Edge(this, other, speedLimit));
+			edges.add(new Edge(other, speedLimit));
 		}
 		
 		public int straightLineDistance(College otherCollege) {
@@ -77,43 +92,32 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	 */
 	public class Edge {
 		private double speedLimit;
-		private College c1;
-		private College c2;
-		private int x1;
-		private int x2;
-		private int y1;
-		private int y2;
-		private boolean isVisible;
+		private College otherCollege;
 		
-		public Edge(College c1, College c2, double speedLimit) {
-			this.c1 = c1;
-			this.c2 = c2;
+		public Edge(College otherCollege, double speedLimit) {
+			this.otherCollege = otherCollege;
 			this.speedLimit = speedLimit;
-			this.x1 = c1.x;
-			this.x2 = c2.x;
-			this.y1 = c1.y;
-			this.y2 = c2.y;
-			this.isVisible = false;
 		}
 		
-		private void paint(Graphics2D g2d) {
-			if(isVisible) {
-				g2d.setColor(Color.BLACK);
-				g2d.drawLine(x1, y1, x2, y2);
-			}
+		public double getSpeedLimit() {
+			return this.speedLimit;
+		}
+		
+		public College getDestination() {
+			return this.otherCollege;
 		}
 	}
 	
-public class Path implements Comparable<Path> {
+	public class Path implements Comparable<Path> {
 		
 		private College college;
 		private College goal;
-		private Path parent;
+		private LinkedList<Path> pathTraveled;
 		private int distanceTraveled;
 		private int cost;
 		
-		public Path(Path parent, College current, College goal, int distanceTraveled) {
-			this.parent = parent;
+		public Path(LinkedList<Path> pathTraveled, College current, College goal, int distanceTraveled) {
+			this.pathTraveled = pathTraveled;
 			this.college = current;
 			this.goal = goal;
 			this.distanceTraveled = distanceTraveled;
@@ -124,12 +128,12 @@ public class Path implements Comparable<Path> {
 			College c;
 			Path child;
 			for (Edge e : college.edges) {
-				c = (college != e.c1) ? e.c1 : e.c2;
-				if (!visitedNodes.contains(c) && c!= parent.college) {
-					int distanceToCollege = college.straightLineDistance(c);
-					child = new Path(this, c, goal, distanceToCollege + distanceTraveled);
-					q.add(child);
-				}
+//				c = (college != e.c1) ? e.c1 : e.c2;
+//				if (!visitedNodes.contains(c) && c!= pathTraveled.getFirst()) {
+//					int distanceToCollege = college.straightLineDistance(c);
+//					child = new Path(this, c, goal, distanceToCollege + distanceTraveled);
+//					q.add(child);
+//				}
 			}
 			Path next = q.poll();
 			
@@ -152,7 +156,7 @@ public class Path implements Comparable<Path> {
 	public ArrayList<College> shortestPath(College start, College finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
 		HashSet<College> visitedNodes = new HashSet<>();
-		Path begin = new Path(null, start, finish, 0);
+		Path begin = new Path(new LinkedList<Path>(), start, finish, 0);
 		q.add(begin);
 		begin.aStarSearch(q, visitedNodes);
 		
