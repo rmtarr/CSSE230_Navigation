@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -116,28 +115,29 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		private int distanceTraveled;
 		private int cost;
 		
-		public Path(LinkedList<Path> pathTraveled, College current, College goal, int distanceTraveled) {
-			this.pathTraveled = pathTraveled;
+		public Path(College current, College goal, int distanceTraveled) {
+			this.pathTraveled = new LinkedList<>();
 			this.college = current;
 			this.goal = goal;
 			this.distanceTraveled = distanceTraveled;
 			this.cost = college.straightLineDistance(goal) + this.distanceTraveled;
 		}
 		
-		public void aStarSearch(PriorityQueue<Path> q, HashSet<College> visitedNodes) {
+		public LinkedList<Path> aStarSearch(PriorityQueue<Path> q) {
 			College c;
 			Path child;
 			for (Edge e : college.edges) {
-//				c = (college != e.c1) ? e.c1 : e.c2;
-//				if (!visitedNodes.contains(c) && c!= pathTraveled.getFirst()) {
-//					int distanceToCollege = college.straightLineDistance(c);
-//					child = new Path(this, c, goal, distanceToCollege + distanceTraveled);
-//					q.add(child);
-//				}
+				c = e.otherCollege;
+				if (c!= pathTraveled.getFirst().college) {
+					pathTraveled.addFirst(this);
+					int distanceToCollege = college.straightLineDistance(c);
+					child = new Path(c, goal, distanceToCollege + distanceTraveled);
+					q.add(child);
+				}
 			}
 			Path next = q.poll();
-			
-			next.aStarSearch(q, visitedNodes);
+			if (next.college == goal) return pathTraveled;
+			return next.aStarSearch(q);
 		}
 		
 		public int compareTo(Path other) {
@@ -153,13 +153,10 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	 * @param finish
 	 * @return
 	 */
-	public ArrayList<College> shortestPath(College start, College finish) {
+	public LinkedList<Path> shortestPath(College start, College finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		HashSet<College> visitedNodes = new HashSet<>();
-		Path begin = new Path(new LinkedList<Path>(), start, finish, 0);
+		Path begin = new Path(start, finish, 0);
 		q.add(begin);
-		begin.aStarSearch(q, visitedNodes);
-		
-		return null;
+		return begin.aStarSearch(q);
 	}
 }
