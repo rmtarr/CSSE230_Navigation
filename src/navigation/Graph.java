@@ -31,8 +31,8 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	}
 	
 	// add LinkedList<Path> path as a parameter- this will be returned from shortestPath method
-	public void paint(Graphics2D g2d) {
-		for(College c : colleges.values()) c.paint(g2d);
+	public void paint(Graphics2D g2d, double xScale, double yScale) {
+		for(College c : colleges.values()) c.paint(g2d,xScale,yScale);
 //		paintPath(g2d, path);
 	}
 	
@@ -78,10 +78,10 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 			return (int)Math.sqrt(x*x - y*y);
 		}
 		
-		private void paint(Graphics2D g2d) {
+		private void paint(Graphics2D g2d, double xScale, double yScale) {
 			g2d.setColor(Color.BLACK);
-			g2d.fillOval(x-5, y-5, 10, 10);
-			g2d.drawString((String) this.name, x+3, y-2);
+			g2d.fillOval((int) (x*xScale-5),(int) (y*yScale-5), 10, 10);
+			g2d.drawString((String) this.name,(int) (x*xScale+3),(int) (y*yScale-3));
 		}
 	}
 	

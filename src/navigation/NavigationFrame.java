@@ -28,6 +28,9 @@ public class NavigationFrame extends JFrame {
 	private Graph<String> graph;
 	private BufferedImage indiana;
 	private Dimension screenSize;
+	private double xScale; //The original program was based on a 1080 x 1920 screen
+	private double yScale; //The content needs to be scaled to fit any screen
+	
 
 	/** Auto Generated serialVersionUID */
 	private static final long serialVersionUID = 1185712731956834898L;
@@ -35,6 +38,9 @@ public class NavigationFrame extends JFrame {
 	public NavigationFrame() throws IOException {
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setMinimumSize(screenSize);
+		xScale = screenSize.getWidth()/1920.0;
+		yScale = screenSize.getHeight()/1080.0;
+		
 		indiana = ImageIO.read(new File("pics/indiana.png"));
 		String[] strar = {"RHIT","ISU","IU"};
 		
@@ -80,8 +86,8 @@ public class NavigationFrame extends JFrame {
 				(int) (screenSize.getHeight()), null);
 		
 		//Paint the graph
-		g2d.translate(350, 550);
-		graph.paint(g2d);
+		g2d.translate(350*xScale, 20 + 530*yScale);
+		graph.paint(g2d,xScale,yScale);
 	}
 	
 	@Override
