@@ -53,6 +53,7 @@ public class NavigationFrame extends JFrame {
 		
 		graph = new Graph<String>();
 		importColleges();
+		testAStar();
 	}
 	
 	private void importColleges() throws FileNotFoundException {
@@ -95,5 +96,9 @@ public class NavigationFrame extends JFrame {
 		this.pack();
 		this.requestFocus();
 		super.repaint();
+	}
+	
+	public void testAStar() {
+		// TODO when all edges are added to graph
 	}
 }

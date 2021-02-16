@@ -153,9 +153,9 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	 * @param finish
 	 * @return
 	 */
-	public LinkedList<Path> shortestPath(College start, College finish) {
+	public LinkedList<Path> shortestPath(T start, T finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		Path begin = new Path(start, finish, 0);
+		Path begin = new Path(colleges.get(start), colleges.get(finish), 0);
 		q.add(begin);
 		return begin.aStarSearch(q);
 	}
