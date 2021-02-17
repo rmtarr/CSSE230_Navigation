@@ -76,8 +76,8 @@ public class NavigationFrame extends JFrame {
 				connections.add(str[j]);
 			}
 			graph.addCollege(name, x, y,connections);
-			
 		}
+		graph.synthesizeEdges();
 		s.close();
 		return namesList;
 	}

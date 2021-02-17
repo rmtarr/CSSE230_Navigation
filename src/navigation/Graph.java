@@ -11,6 +11,8 @@ import java.util.PriorityQueue;
 import javax.swing.JButton;
 
 public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
+	private static double maxSpeed = 100; //max speed of any edge
+	private static double minSpeed = 10; //max speed of any edge
 	private HashMap<T,College> colleges;
 	private ArrayList<Edge> edges;
 	
@@ -23,16 +25,25 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		colleges.put(name, new College(name,x,y, connections));
 	}
 	
-	public boolean addEdge(T c1, T c2, int speedLimit) {
-		if (!colleges.containsKey(c1) && !colleges.containsKey(c2)) return false;
-		colleges.get(c1).addEdge(c2, speedLimit);
-		colleges.get(c2).addEdge(c1, speedLimit);
-	    return true;
+	public void synthesizeEdges() {
+		for(College c : colleges.values()) {
+			c.synthesizeEdges();
+		}
 	}
+	
+//	public boolean addEdge(T c1, T c2, int speedLimit) {
+//		if (!colleges.containsKey(c1) && !colleges.containsKey(c2)) return false;
+//		colleges.get(c1).addEdge(c2, speedLimit);
+//		colleges.get(c2).addEdge(c1, speedLimit);
+//	    return true;
+//	}
 	
 	// add LinkedList<Path> path as a parameter- this will be returned from shortestPath method
 	public void paint(Graphics2D g2d, double xScale, double yScale) {
-		for(College c : colleges.values()) c.paint(g2d,xScale,yScale);
+		for(College c : colleges.values()) {
+			c.paint(g2d,xScale,yScale);
+			
+		}
 //		paintPath(g2d, path);
 	}
 	
@@ -66,13 +77,28 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 			this.x = x;
 			this.y = y;
 			this.name = name;
+			this.edges = new ArrayList<Edge>();
 			this.connections = new ArrayList<String>();
 			this.connections.addAll(connections);
 		}
 		
-		public void addEdge(T otherCollege, double speedLimit) {
-			College other = colleges.get(otherCollege);
-			edges.add(new Edge(other, speedLimit));
+		public void synthesizeEdges() {
+			for(String connection : connections) {
+				if(!connection.isBlank()) {
+					College other = colleges.get(connection);
+					System.out.println(connection);
+					if(other == null) System.out.println("BIG PROBLEM");
+					
+					//Arbitrary algorithm for making up a fictional speed
+					int xDiff = Math.abs(this.x - other.x);
+					int yDiff = Math.abs(this.y - other.y);
+					double speedLimit = 50+50*((xDiff-yDiff)/(xDiff+yDiff));
+					speedLimit = Math.min(speedLimit, maxSpeed);
+					speedLimit = Math.max(speedLimit, minSpeed);
+					
+					edges.add(new Edge(other, speedLimit));
+				}
+			}
 		}
 		
 		public int straightLineDistance(College otherCollege) {
@@ -85,6 +111,10 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 			g2d.setColor(Color.BLACK);
 			g2d.fillOval((int) (x*xScale-5),(int) (y*yScale-5), 10, 10);
 			g2d.drawString((String) this.name,(int) (x*xScale+3),(int) (y*yScale-3));
+			for(Edge e : edges) {
+				g2d.drawLine((int) (this.x*xScale), (int) (this.y*yScale), 
+						(int) (e.otherCollege.x*xScale), (int) (e.otherCollege.y*yScale));
+			}
 		}
 	}
 	
@@ -100,7 +130,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 			this.otherCollege = otherCollege;
 			this.speedLimit = speedLimit;
 		}
-		
+
 		public double getSpeedLimit() {
 			return this.speedLimit;
 		}
