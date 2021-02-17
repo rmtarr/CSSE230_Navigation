@@ -67,7 +67,12 @@ public class NavigationFrame extends JFrame {
 			String name = str[0];
 			int x = Integer.parseInt(str[1]);
 			int y = Integer.parseInt(str[2]);
-			graph.addCollege(name, x, y);
+			ArrayList<String> connections = new ArrayList<String>();
+			for(int j = 3; j< str.length; j++) {
+				connections.add(str[j]);
+			}
+			graph.addCollege(name, x, y,connections);
+			
 		}
 		s.close();
 	}

@@ -19,8 +19,8 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		edges = new ArrayList<Edge>();
 	}
 	
-	public void addCollege(T name, int x, int y) {
-		colleges.put(name, new College(name,x,y));
+	public void addCollege(T name, int x, int y, ArrayList<String> connections) {
+		colleges.put(name, new College(name,x,y, connections));
 	}
 	
 	public boolean addEdge(T c1, T c2, int speedLimit) {
@@ -60,11 +60,14 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		private int y;
 		private Image icon;
 		private ArrayList<Edge> edges;
+		private ArrayList<String> connections;
 
-		public College(T name, int x, int y){
+		public College(T name, int x, int y, ArrayList<String> connections){
 			this.x = x;
 			this.y = y;
 			this.name = name;
+			this.connections = new ArrayList<String>();
+			this.connections.addAll(connections);
 		}
 		
 		public void addEdge(T otherCollege, double speedLimit) {
