@@ -150,33 +150,55 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		private LinkedList<Path> pathTraveled;
 		private int distanceTraveled;
 		private int cost;
+		private Path parent;
 		
-		public Path(College current, College goal, int distanceTraveled, LinkedList<Path> pathTraveled) {
+		public Path(College current, College goal, int distanceTraveled, LinkedList<Path> pathTraveled, Path parent) {
 			this.pathTraveled = pathTraveled;
 			this.college = current;
 			this.goal = goal;
 			this.distanceTraveled = distanceTraveled;
 			this.cost = current.straightLineDistance(goal) + this.distanceTraveled;
+			this.parent = parent;
 		}
 		
-		public LinkedList<Path> aStarSearch(PriorityQueue<Path> q) {
+//		public LinkedList<Path> aStarSearch(PriorityQueue<Path> q, boolean speedConsidered) {
+//			College c;
+//			Path child;
+//			for (Edge e : college.edges) {
+//				c = e.otherCollege;
+//				if (pathTraveled.isEmpty() || c!= pathTraveled.getLast().college) {
+//					int distanceToCollege = college.straightLineDistance(c);
+//					child = new Path(c, goal, distanceToCollege + distanceTraveled, pathTraveled, this);
+//					if (speedConsidered) this.cost /= e.speedLimit;
+//					q.add(child);
+//				}
+//			}
+//			Path next = q.poll();
+//			if (next.parent == this) pathTraveled.add(this);
+//			if (next.college == goal) {
+//				pathTraveled.add(next);
+//				return pathTraveled;
+//			}
+//			return next.aStarSearch(q, speedConsidered);
+//		}
+		
+		public Path aStarSearch(PriorityQueue<Path> q, boolean speedConsidered) {
 			College c;
 			Path child;
-			pathTraveled.add(this);
 			for (Edge e : college.edges) {
 				c = e.otherCollege;
-				if (pathTraveled.isEmpty() || c!= pathTraveled.getLast().college) {
+				if (parent == null || c!= parent.college) {
 					int distanceToCollege = college.straightLineDistance(c);
-					child = new Path(c, goal, distanceToCollege + distanceTraveled, pathTraveled);
+					child = new Path(c, goal, distanceToCollege + distanceTraveled, pathTraveled, this);
+					if (speedConsidered) this.cost /= e.speedLimit;
 					q.add(child);
 				}
 			}
 			Path next = q.poll();
 			if (next.college == goal) {
-				pathTraveled.add(next);
-				return pathTraveled;
+				return next;
 			}
-			return next.aStarSearch(q);
+			return next.aStarSearch(q, speedConsidered);
 		}
 		
 		public T getCollegeName() {
@@ -189,17 +211,22 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		}
 	}
 	
-	/**
-	 * A* search algorithm for shortest path
-	 * 
-	 * @param start
-	 * @param finish
-	 * @return
-	 */
-	public LinkedList<Path> shortestPath(T start, T finish) {
+//	public LinkedList<Path> shortestPath(T start, T finish, boolean speedConsidered) {
+//		PriorityQueue<Path> q = new PriorityQueue<>();
+//		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, new LinkedList<Path>(), null);
+//		return begin.aStarSearch(q, speedConsidered);
+//	}
+	
+	public LinkedList<Path> shortestPath(T start, T finish, boolean speedConsidered) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, new LinkedList<Path>());
-		return begin.aStarSearch(q);
+		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, new LinkedList<Path>(), null);
+		Path college = begin.aStarSearch(q, speedConsidered);
+		LinkedList<Path> path = new LinkedList<>();
+		while (college != null) {
+			path.addFirst(college);
+			college = college.parent;
+		}
+		return path;
 	}
 	
 //	private class RandomIterator implements Iterator<Graph.College>{

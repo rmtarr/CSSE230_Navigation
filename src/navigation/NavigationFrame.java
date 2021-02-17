@@ -135,7 +135,7 @@ public class NavigationFrame extends JFrame {
 		});
 		
 
-		testAStar("Goshen", "Anderson University");
+		testAStar("Trine University", "USI", false);
 	}
 	
 	private ArrayList<String> importColleges() throws FileNotFoundException {
@@ -188,9 +188,9 @@ public class NavigationFrame extends JFrame {
 		super.repaint();
 	}
 	
-	public void testAStar(String start, String finish) {
+	public void testAStar(String start, String finish, boolean speedConsidered) {
 		// TODO when all edges are added to graph
-		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish);
+		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish, speedConsidered);
 		for (Path p : path) {
 			System.out.println(p.getCollegeName());
 		}
