@@ -135,7 +135,7 @@ public class NavigationFrame extends JFrame {
 		});
 		
 
-		testAStar("Franklin", "USI");
+		testAStar("Goshen", "Anderson University");
 	}
 	
 	private ArrayList<String> importColleges() throws FileNotFoundException {

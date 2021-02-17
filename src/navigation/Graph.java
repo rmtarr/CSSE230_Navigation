@@ -162,17 +162,20 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		public LinkedList<Path> aStarSearch(PriorityQueue<Path> q) {
 			College c;
 			Path child;
+			pathTraveled.add(this);
 			for (Edge e : college.edges) {
 				c = e.otherCollege;
-				if (pathTraveled.isEmpty() || c!= pathTraveled.getFirst().college) {
-					pathTraveled.addFirst(this);
+				if (pathTraveled.isEmpty() || c!= pathTraveled.getLast().college) {
 					int distanceToCollege = college.straightLineDistance(c);
 					child = new Path(c, goal, distanceToCollege + distanceTraveled, pathTraveled);
 					q.add(child);
 				}
 			}
 			Path next = q.poll();
-			if (next.college == goal) return pathTraveled;
+			if (next.college == goal) {
+				pathTraveled.add(next);
+				return pathTraveled;
+			}
 			return next.aStarSearch(q);
 		}
 		
@@ -196,7 +199,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 	public LinkedList<Path> shortestPath(T start, T finish) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
 		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, new LinkedList<Path>());
-		q.add(begin);
 		return begin.aStarSearch(q);
 	}
 	
