@@ -66,7 +66,7 @@ public class NavigationFrame extends JFrame {
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<String> namesList = new ArrayList<String>();
 		
-		while(s.hasNext()) lines.add(s.next());
+		while(s.hasNext()) lines.add(s.nextLine());
 		
 		for(int i = 0;i<lines.size();i++) {
 			String str[] = lines.get(i).split(",");
