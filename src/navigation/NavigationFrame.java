@@ -5,12 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -18,12 +19,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -57,6 +59,7 @@ public class NavigationFrame extends JFrame {
 		this.setMinimumSize(screenSize);
 		xScale = screenSize.getWidth()/1920.0;
 		yScale = screenSize.getHeight()/1080.0;
+		getContentPane().setBackground(Color.GRAY);
 		
 		//Draw image of Indiana
 		indiana = ImageIO.read(new File("pics/indiana.png"));
@@ -69,31 +72,53 @@ public class NavigationFrame extends JFrame {
 		JPanel infoPanel = new JPanel();
 		this.add(infoPanel,BorderLayout.EAST);
 		
-//		infoPanel.setBackground(Color.GREEN);
+		infoPanel.setBackground(Color.GRAY);
+		
+		JLabel label1 = new JLabel("Source College");
+		JLabel label2 = new JLabel("Destination College");
 		
 		JComboBox src = new JComboBox(names.toArray());
-		src.setSelectedItem("Rose-Hulman");
+		src.setSelectedItem(currentSrc);
+		src.setToolTipText("Select the college you are coming from");
+		src.setMaximumSize(new Dimension(1000,20));
 		src.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentSrc = String.valueOf(src.getSelectedItem());
 			}
 		});
-		infoPanel.add(src);
 		JComboBox dest = new JComboBox(names.toArray());
-		dest.setSelectedItem("Rose-Hulman");
+		dest.setSelectedItem(currentDest);
+		dest.setToolTipText("Select the college you are going to");
+		dest.setMaximumSize(new Dimension(1000,20));
 		dest.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentDest = String.valueOf(dest.getSelectedItem());
 			}
 		});
-		infoPanel.add(dest);
-		
-		
+		GroupLayout layout = new GroupLayout(infoPanel);
+		layout.setHorizontalGroup(
+			   layout.createSequentialGroup()
+			   	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+			           .addComponent(label1)
+			           .addComponent(src))
+		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+			           .addComponent(label2)
+			           .addComponent(dest))
+			);
+			layout.setVerticalGroup(
+			   layout.createSequentialGroup()
+			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+			           .addComponent(label1)
+			           .addComponent(label2))
+		          .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				           .addComponent(src)
+				           .addComponent(dest))
+			);
+		infoPanel.setLayout(layout);
 		//Add the mouse listener to handle clicking on colleges
 		this.addMouseListener(new MouseListener() {
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Object clicked = graph.getClicked(e.getX(), e.getY(), xScale, yScale);
@@ -109,31 +134,17 @@ public class NavigationFrame extends JFrame {
 			}
 
 			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mousePressed(MouseEvent e) {}
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mouseReleased(MouseEvent e) {}
 			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mouseEntered(MouseEvent e) {}
 			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+			public void mouseExited(MouseEvent e) {}
 		});
 		
+//		this.pack();
+//		this.setVisible(true);
 
 		testAStar("Franklin", "USI");
 	}
@@ -164,29 +175,31 @@ public class NavigationFrame extends JFrame {
 	
 	@Override
 	public void paint(Graphics g) {
+		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		//This is where we draw all the images for the nodes and draw all the edges if they are visible
 		
 		//Color the background gray
-		g2d.setColor(Color.GRAY);
-		g2d.fill(new Rectangle((int)screenSize.getWidth()+20,(int)screenSize.getHeight()+20));
+		//g2d.setColor(Color.GRAY);
+		//g2d.fill(new Rectangle((int)screenSize.getWidth()+20,(int)screenSize.getHeight()+20));
 		
 		//Scale the image of Indiana to the window size and draw it
 		g2d.drawImage(indiana, 0, 20, 
 				(int) ((screenSize.getHeight()/indiana.getHeight())*indiana.getWidth()), 
 				(int) (screenSize.getHeight()), null);
 		
-		//Paint the graph
+		//Paint the graph starting at the middle of the indiana image
 		g2d.translate(350*xScale, 20 + 530*yScale);
 		graph.paint(g2d,xScale,yScale);
+		
 	}
 	
-	@Override
-	public void repaint() {
-		this.pack();
-		this.requestFocus();
-		super.repaint();
-	}
+//	@Override
+//	public void repaint() {
+//		this.pack();
+//		this.requestFocus();
+//		super.repaint();
+//	}
 	
 	public void testAStar(String start, String finish) {
 		// TODO when all edges are added to graph
