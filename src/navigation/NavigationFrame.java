@@ -7,6 +7,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -21,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import navigation.Graph.Path;
 
@@ -36,33 +41,71 @@ public class NavigationFrame extends JFrame {
 	private Dimension screenSize;
 	private double xScale; //The original program was based on a 1080 x 1920 screen
 	private double yScale; //The content needs to be scaled to fit any screen
+	private String currentDest;
+	private String currentSrc;
 	
 
 	/** Auto Generated serialVersionUID */
 	private static final long serialVersionUID = 1185712731956834898L;
 
 	public NavigationFrame() throws IOException {
+		currentDest = "Rose-Hulman";
+		currentSrc = "Rose-Hulman";
+		
+		//Get the Screen Size and make scale variables to handle screen scaling
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setMinimumSize(screenSize);
 		xScale = screenSize.getWidth()/1920.0;
 		yScale = screenSize.getHeight()/1080.0;
 		
+		//Draw image of Indiana
 		indiana = ImageIO.read(new File("pics/indiana.png"));
 		
+		//Make the graph and import the colleges from the csv
 		graph = new Graph<String>();
 		ArrayList<String> names = importColleges();
 		
+		//Info Panel Setup
 		JPanel infoPanel = new JPanel();
-		JComboBox c = new JComboBox(names.toArray());
-		infoPanel.setBackground(Color.GREEN);
 		this.add(infoPanel,BorderLayout.EAST);
-		infoPanel.add(c);
 		
+//		infoPanel.setBackground(Color.GREEN);
+		
+		JComboBox src = new JComboBox(names.toArray());
+		src.setSelectedItem("Rose-Hulman");
+		src.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentSrc = String.valueOf(src.getSelectedItem());
+			}
+		});
+		infoPanel.add(src);
+		JComboBox dest = new JComboBox(names.toArray());
+		dest.setSelectedItem("Rose-Hulman");
+		dest.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentDest = String.valueOf(dest.getSelectedItem());
+			}
+		});
+		infoPanel.add(dest);
+		
+		
+		//Add the mouse listener to handle clicking on colleges
 		this.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println(graph.getClicked(e.getX(), e.getY(), xScale, yScale));
+				Object clicked = graph.getClicked(e.getX(), e.getY(), xScale, yScale);
+				if(clicked != null) {
+					if(SwingUtilities.isLeftMouseButton(e)) {
+						currentSrc = clicked.toString();
+						src.setSelectedItem(currentSrc);
+					} else if(SwingUtilities.isRightMouseButton(e)) {
+						currentDest = clicked.toString();
+						dest.setSelectedItem(currentDest);
+					}
+				}
 			}
 
 			@Override
