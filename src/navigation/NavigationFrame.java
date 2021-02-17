@@ -12,11 +12,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import navigation.Graph.Path;
 
 /**
  * This class implements the GUI for the navigation of the graph and handles the listeners
@@ -55,7 +58,7 @@ public class NavigationFrame extends JFrame {
 		infoPanel.add(c);
 		
 
-		testAStar();
+		testAStar("Franklin", "USI");
 	}
 	
 	private ArrayList<String> importColleges() throws FileNotFoundException {
@@ -108,7 +111,11 @@ public class NavigationFrame extends JFrame {
 		super.repaint();
 	}
 	
-	public void testAStar() {
+	public void testAStar(String start, String finish) {
 		// TODO when all edges are added to graph
+		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish);
+		for (Path p : path) {
+			System.out.println(p.getCollegeName());
+		}
 	}
 }
