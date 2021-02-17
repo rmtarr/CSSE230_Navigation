@@ -42,29 +42,33 @@ public class NavigationFrame extends JFrame {
 		yScale = screenSize.getHeight()/1080.0;
 		
 		indiana = ImageIO.read(new File("pics/indiana.png"));
-		String[] strar = {"RHIT","ISU","IU"};
 		
+		graph = new Graph<String>();
+		ArrayList<String> names = importColleges();
+		
+		//String[] strar = {"RHIT","ISU","IU"};
 		
 		JPanel infoPanel = new JPanel();
-		JComboBox c = new JComboBox(strar);
+		JComboBox c = new JComboBox(names.toArray());
 		infoPanel.setBackground(Color.GREEN);
 		this.add(infoPanel,BorderLayout.EAST);
 		infoPanel.add(c);
 		
-		graph = new Graph<String>();
-		importColleges();
+
 		testAStar();
 	}
 	
-	private void importColleges() throws FileNotFoundException {
+	private ArrayList<String> importColleges() throws FileNotFoundException {
 		Scanner s = new Scanner(new File("lib/colleges.csv"));
 		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<String> namesList = new ArrayList<String>();
 		
 		while(s.hasNext()) lines.add(s.next());
 		
 		for(int i = 0;i<lines.size();i++) {
 			String str[] = lines.get(i).split(",");
 			String name = str[0];
+			namesList.add(name);
 			int x = Integer.parseInt(str[1]);
 			int y = Integer.parseInt(str[2]);
 			ArrayList<String> connections = new ArrayList<String>();
@@ -75,6 +79,7 @@ public class NavigationFrame extends JFrame {
 			
 		}
 		s.close();
+		return namesList;
 	}
 	
 	@Override
