@@ -7,11 +7,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
@@ -49,13 +52,44 @@ public class NavigationFrame extends JFrame {
 		graph = new Graph<String>();
 		ArrayList<String> names = importColleges();
 		
-		//String[] strar = {"RHIT","ISU","IU"};
-		
 		JPanel infoPanel = new JPanel();
 		JComboBox c = new JComboBox(names.toArray());
 		infoPanel.setBackground(Color.GREEN);
 		this.add(infoPanel,BorderLayout.EAST);
 		infoPanel.add(c);
+		
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(graph.getClicked(e.getX(), e.getY(), xScale, yScale));
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 
 		testAStar("Franklin", "USI");

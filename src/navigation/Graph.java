@@ -8,11 +8,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import javax.swing.JButton;
 
-public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
+public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.College>{
 	private static double maxSpeed = 100; //max speed of any edge
-	private static double minSpeed = 10; //max speed of any edge
+	private static double minSpeed = 10; //min speed of any edge
 	private HashMap<T,College> colleges;
 	private ArrayList<Edge> edges;
 	
@@ -31,13 +30,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		}
 	}
 	
-//	public boolean addEdge(T c1, T c2, int speedLimit) {
-//		if (!colleges.containsKey(c1) && !colleges.containsKey(c2)) return false;
-//		colleges.get(c1).addEdge(c2, speedLimit);
-//		colleges.get(c2).addEdge(c1, speedLimit);
-//	    return true;
-//	}
-	
 	// add LinkedList<Path> path as a parameter- this will be returned from shortestPath method
 	public void paint(Graphics2D g2d, double xScale, double yScale) {
 		for(College c : colleges.values()) {
@@ -49,13 +41,28 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	
 	public void paintPath(Graphics2D g2d, LinkedList<Path> path) {
 		// TODO
-		
-		
+	}
+	
+	/**
+	 * This method takes the location of a mouse click and finds the college that was clicked on
+	 * @param x location that the mouse was clicked
+	 * @param y location that the mouse was clicked
+	 * @return name of the college that was clicked on
+	 */
+	public T getClicked(int x, int y, double xScale, double yScale) {
+		double xAdjusted = (x-350.0*xScale)/xScale;
+		double yAdjusted = (y-20.0-530.0*yScale)/yScale;
+		for(College c : colleges.values()) {
+			if(Math.sqrt((c.x-xAdjusted)*(c.x-xAdjusted)+(c.y-yAdjusted)*(c.y-yAdjusted))<5) {
+				return c.name;
+			}
+		}
+		return null;
 	}
 	
 	@Override
-	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
+	public Iterator<Graph.College> iterator() {
+		//return new RandomIterator();
 		return null;
 	}
 	
@@ -63,9 +70,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 	 * College Class
 	 * 
 	 */
-	public class College extends JButton{
-		/** Auto Generated serialVersionUID */
-		private static final long serialVersionUID = 7442789711473774875L;
+	public class College{
 		private T name;
 		private int x;
 		private int y;
@@ -86,8 +91,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 			for(String connection : connections) {
 				if(!connection.isEmpty()) {
 					College other = colleges.get(connection);
-//					System.out.println(connection);
-					if(other == null) System.out.println("BIG PROBLEM");
 					
 					//Arbitrary algorithm for making up a fictional speed
 					int xDiff = Math.abs(this.x - other.x);
@@ -196,4 +199,25 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<T>{
 		q.add(begin);
 		return begin.aStarSearch(q);
 	}
+	
+//	private class RandomIterator implements Iterator<Graph.College>{
+//		ArrayList<College> collegeList;
+//		
+//		public RandomIterator() {
+//			collegeList = new ArrayList<College>();
+//			collegeList.addAll(colleges.values());
+//		}
+//
+//		@Override
+//		public boolean hasNext() {
+//			return !collegeList.isEmpty();
+//		}
+//
+//		@Override
+//		public College next() {
+//			College temp = collegeList.get(0);
+//			collegeList.remove(0);
+//			return temp;
+//		}
+//	}
 }
