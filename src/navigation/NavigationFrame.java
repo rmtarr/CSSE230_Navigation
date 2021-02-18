@@ -3,6 +3,7 @@ package navigation;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,6 +25,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -74,7 +76,8 @@ public class NavigationFrame extends JFrame {
 		this.add(infoPanel,BorderLayout.EAST);
 		
 		infoPanel.setBackground(Color.GRAY);
-		infoPanel.setLayout(new BorderLayout());
+		infoPanel.setLayout(new FlowLayout());
+		infoPanel.setPreferredSize(new Dimension(600,5000));
 		
 		JPanel title = new JPanel();
 		title.setBackground(Color.GRAY);
@@ -82,7 +85,7 @@ public class NavigationFrame extends JFrame {
 		JLabel label0 = new JLabel("Indiana College Navigator");
 		label0.setFont(new Font("Cooper Black",1,40));
 		title.add(label0);
-		infoPanel.add(title,BorderLayout.NORTH);
+		infoPanel.add(title);
 		
 		JPanel selection = new JPanel();
 		selection.setBackground(Color.GRAY);
@@ -110,6 +113,7 @@ public class NavigationFrame extends JFrame {
 				currentDest = String.valueOf(dest.getSelectedItem());
 			}
 		});
+		
 		GroupLayout layout = new GroupLayout(selection);
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -127,7 +131,21 @@ public class NavigationFrame extends JFrame {
 						.addComponent(src)
 						.addComponent(dest)));
 		selection.setLayout(layout);
-		infoPanel.add(selection,BorderLayout.CENTER);
+		infoPanel.add(selection);
+		
+		JPanel GOButton = new JPanel();
+		JButton GO = new JButton("GO!");
+		GOButton.setMaximumSize(new Dimension(100,50));
+		GOButton.add(GO);
+		//GO.setPreferredSize(new Dimension(10,50));
+		GO.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		infoPanel.add(GOButton);
+		
 		//Add the mouse listener to handle clicking on colleges
 		this.addMouseListener(new MouseListener() {
 			@Override
