@@ -18,12 +18,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -48,12 +57,25 @@ public class NavigationFrame extends JFrame {
 	private double yScale; //The content needs to be scaled to fit any screen
 	private String currentDest;
 	private String currentSrc;
+	//private InputStream jonesin = new FileInputStream("lib/IndianaJones.mp3");
+	//private AudioInputStream jone = new AudioInputStream(jonesin);
+	
 	
 
 	/** Auto Generated serialVersionUID */
 	private static final long serialVersionUID = 1185712731956834898L;
 
-	public NavigationFrame() throws IOException {
+	public NavigationFrame() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+		//JONESIN BABY
+		File audioFile = new File("lib/IndianaJones.WAV");
+		AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile.getAbsoluteFile());
+		AudioFormat format = audioStream.getFormat();
+		DataLine.Info info = new DataLine.Info(Clip.class, format);
+		Clip audioClip = (Clip) AudioSystem.getLine(info);
+		audioClip.open(audioStream);
+		audioClip.start();
+		//WOOOH
+		
 		currentDest = "Rose-Hulman";
 		currentSrc = "Rose-Hulman";
 		

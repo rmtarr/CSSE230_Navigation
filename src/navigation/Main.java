@@ -3,6 +3,8 @@ package navigation;
 import java.awt.Color;
 import java.io.IOException;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
 /**
@@ -17,7 +19,7 @@ public class Main
 {
 	private JFrame frame;
 
-	Main() throws IOException
+	Main() throws IOException, UnsupportedAudioFileException, LineUnavailableException
 	{
 		frame = new NavigationFrame();
 		frame.setTitle("College Navigator");
@@ -26,7 +28,7 @@ public class Main
 		frame.setVisible(true);
 	}
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException
 	{
 		new Main();
 	}
