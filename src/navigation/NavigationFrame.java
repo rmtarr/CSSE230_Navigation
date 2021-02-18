@@ -141,7 +141,9 @@ public class NavigationFrame extends JFrame {
 		GO.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				graph.shortestPath(currentSrc, currentDest, false);
+				pack();
+				repaint();
 			}
 		});
 		infoPanel.add(GOButton);
@@ -175,7 +177,7 @@ public class NavigationFrame extends JFrame {
 //		this.pack();
 //		this.setVisible(true);
 
-		testAStar("Trine University", "USI", false);
+		//testAStar("Trine University", "USI", false);
 	}
 	
 	private ArrayList<String> importColleges() throws FileNotFoundException {

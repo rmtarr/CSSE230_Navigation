@@ -14,10 +14,12 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 	private static double minSpeed = 10; //min speed of any edge
 	private HashMap<T,College> colleges;
 	private ArrayList<Edge> edges;
+	private LinkedList<Path> currentPath;
 	
 	public Graph() {
 		colleges = new HashMap<T,College>();
 		edges = new ArrayList<Edge>();
+		currentPath = null;
 	}
 	
 	public void addCollege(T name, int x, int y, ArrayList<String> connections) {
@@ -36,11 +38,23 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 			c.paint(g2d,xScale,yScale);
 			
 		}
-//		paintPath(g2d, path);
+		paintPath(g2d, xScale, yScale);
 	}
 	
-	public void paintPath(Graphics2D g2d, LinkedList<Path> path) {
-		// TODO
+	public void paintPath(Graphics2D g2d, double xS, double yS) {
+		if(currentPath!=null) {
+			int tempx = currentPath.get(0).college.x;
+			int tempy = currentPath.get(0).college.y;
+			
+			for(int i=1; i<currentPath.size();i++) {
+				g2d.setColor(Color.GREEN);
+				g2d.drawLine((int)(xS*tempx), (int)(yS*tempy), (int)(xS*currentPath.get(i).college.x), (int)(yS*currentPath.get(i).college.y));
+				tempx = currentPath.get(i).college.x;
+				tempy = currentPath.get(i).college.y;
+				System.out.println(currentPath.get(i).getCollegeName());
+			}
+			
+		}
 	}
 	
 	/**
@@ -226,6 +240,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 			path.addFirst(college);
 			college = college.parent;
 		}
+		currentPath=path;
 		return path;
 	}
 	
