@@ -3,6 +3,7 @@ package navigation;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
@@ -73,6 +74,18 @@ public class NavigationFrame extends JFrame {
 		this.add(infoPanel,BorderLayout.EAST);
 		
 		infoPanel.setBackground(Color.GRAY);
+		infoPanel.setLayout(new BorderLayout());
+		
+		JPanel title = new JPanel();
+		title.setBackground(Color.GRAY);
+		
+		JLabel label0 = new JLabel("Indiana College Navigator");
+		label0.setFont(new Font("Cooper Black",1,40));
+		title.add(label0);
+		infoPanel.add(title,BorderLayout.NORTH);
+		
+		JPanel selection = new JPanel();
+		selection.setBackground(Color.GRAY);
 		
 		JLabel label1 = new JLabel("Source College");
 		JLabel label2 = new JLabel("Destination College");
@@ -97,26 +110,24 @@ public class NavigationFrame extends JFrame {
 				currentDest = String.valueOf(dest.getSelectedItem());
 			}
 		});
-		GroupLayout layout = new GroupLayout(infoPanel);
-		layout.setHorizontalGroup(
-			   layout.createSequentialGroup()
-			   	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			           .addComponent(label1)
-			           .addComponent(src))
-		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			           .addComponent(label2)
-			           .addComponent(dest))
-			);
-			layout.setVerticalGroup(
-			   layout.createSequentialGroup()
-			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			           .addComponent(label1)
-			           .addComponent(label2))
-		          .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				           .addComponent(src)
-				           .addComponent(dest))
-			);
-		infoPanel.setLayout(layout);
+		GroupLayout layout = new GroupLayout(selection);
+		layout.setHorizontalGroup(layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(label1)
+						.addComponent(src))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(label2)
+						.addComponent(dest)));
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(label1)
+						.addComponent(label2))
+				.addGroup(
+						layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(src)
+						.addComponent(dest)));
+		selection.setLayout(layout);
+		infoPanel.add(selection,BorderLayout.CENTER);
 		//Add the mouse listener to handle clicking on colleges
 		this.addMouseListener(new MouseListener() {
 			@Override
