@@ -161,13 +161,11 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		
 		private College college;
 		private College goal;
-		private LinkedList<Path> pathTraveled;
 		private int distanceTraveled;
 		private int cost;
 		private Path parent;
 		
-		public Path(College current, College goal, int distanceTraveled, LinkedList<Path> pathTraveled, Path parent) {
-			this.pathTraveled = pathTraveled;
+		public Path(College current, College goal, int distanceTraveled, Path parent) {
 			this.college = current;
 			this.goal = goal;
 			this.distanceTraveled = distanceTraveled;
@@ -196,6 +194,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 //			return next.aStarSearch(q, speedConsidered);
 //		}
 		
+		// TODO: NEED TO FIX METHOD FOR TIME CALCULATION
 		public Path aStarSearch(PriorityQueue<Path> q, boolean speedConsidered) {
 			College c;
 			Path child;
@@ -203,7 +202,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 				c = e.otherCollege;
 				if (parent == null || c!= parent.college) {
 					int distanceToCollege = college.straightLineDistance(c);
-					child = new Path(c, goal, distanceToCollege + distanceTraveled, pathTraveled, this);
+					child = new Path(c, goal, distanceToCollege + distanceTraveled, this);
 					if (speedConsidered) this.cost /= e.speedLimit;
 					q.add(child);
 				}
@@ -233,7 +232,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 	
 	public LinkedList<Path> shortestPath(T start, T finish, boolean speedConsidered) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
-		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, new LinkedList<Path>(), null);
+		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, null);
 		Path college = begin.aStarSearch(q, speedConsidered);
 		LinkedList<Path> path = new LinkedList<>();
 		while (college != null) {
