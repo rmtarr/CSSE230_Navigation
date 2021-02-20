@@ -200,7 +200,7 @@ public class NavigationFrame extends JFrame {
 			public void mouseEntered(MouseEvent e) {}
 			public void mouseExited(MouseEvent e) {}
 		});
-		testAStar("IU","Ivy Tech", false);
+		testAStar("IU","Ivy Tech", true);
 	}
 	
 	@Override

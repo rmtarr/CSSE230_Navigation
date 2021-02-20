@@ -143,16 +143,15 @@ public class Graph<T> {
 		private boolean speedConsidered;
 		
 		public Path(College current, College goal, int costAccumulated, Path parent, boolean speedConsidered) {
-			int speedLimit = (speedConsidered) ? (int)Graph.maxSpeed : 1;
+			int maxSpeedLimit = (speedConsidered) ? (int)Graph.maxSpeed : 1;
 			this.college = current;
 			this.goal = goal;
 			this.costAccumulated = costAccumulated;
-			this.totalCost = current.straightLineDistance(goal)/speedLimit + this.costAccumulated;
+			this.totalCost = current.straightLineDistance(goal)/maxSpeedLimit + this.costAccumulated;
 			this.parent = parent;
 			this.speedConsidered = speedConsidered;
 		}
 		
-		// TODO: NEED TO FIX METHOD FOR TIME CALCULATION
 		public Path aStarSearch(PriorityQueue<Path> q) {
 			College c;
 			Path child;
@@ -161,7 +160,7 @@ public class Graph<T> {
 			for (Edge e : college.edges) {
 				c = e.otherCollege;
 				if (parent == null || c!= parent.college) {
-					speedLimit = (speedConsidered) ? (int)Graph.maxSpeed : 1;
+					speedLimit = (speedConsidered) ? (int)e.speedLimit : 1;
 					cost = college.straightLineDistance(c)/speedLimit;
 					child = new Path(c, goal, cost + costAccumulated, this, speedConsidered);
 					q.add(child);
