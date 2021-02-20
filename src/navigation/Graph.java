@@ -9,16 +9,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.College>{
+public class Graph<T> {
 	private static double maxSpeed = 100; //max speed of any edge
 	private static double minSpeed = 10; //min speed of any edge
 	private HashMap<T,College> colleges;
-	private ArrayList<Edge> edges;
 	private LinkedList<Path> currentPath;
 	
 	public Graph() {
 		colleges = new HashMap<T,College>();
-		edges = new ArrayList<Edge>();
 		currentPath = null;
 	}
 	
@@ -32,12 +30,10 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		}
 	}
 	
-	// add LinkedList<Path> path as a parameter- this will be returned from shortestPath method
 	public void paint(Graphics2D g2d, double xScale, double yScale) {
-		for(College c : colleges.values()) {
-			c.paint(g2d,xScale,yScale);
-			
-		}
+		//Paint all of the colleges
+		for(College c : colleges.values()) c.paint(g2d,xScale,yScale);
+		//Paint the current path results from A*
 		paintPath(g2d, xScale, yScale);
 	}
 	
@@ -53,7 +49,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 				tempy = currentPath.get(i).college.y;
 				System.out.println(currentPath.get(i).getCollegeName());
 			}
-			
 		}
 	}
 	
@@ -74,12 +69,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		return null;
 	}
 	
-	@Override
-	public Iterator<Graph.College> iterator() {
-		//return new RandomIterator();
-		return null;
-	}
-	
 	/**
 	 * College Class
 	 * 
@@ -88,7 +77,6 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		private T name;
 		private int x;
 		private int y;
-		private Image icon;
 		private ArrayList<Edge> edges;
 		private ArrayList<String> connections;
 
@@ -106,7 +94,7 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 				if(!connection.isEmpty()) {
 					College other = colleges.get(connection);
 					
-					//Arbitrary algorithm for making up a fictional speed
+					//Arbitrary algorithm for making up a fictional speed for the edge
 					int xDiff = Math.abs(this.x - other.x);
 					int yDiff = Math.abs(this.y - other.y);
 					double speedLimit = 50+50*((xDiff-yDiff)/(xDiff+yDiff));
@@ -147,18 +135,9 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 			this.otherCollege = otherCollege;
 			this.speedLimit = speedLimit;
 		}
-
-		public double getSpeedLimit() {
-			return this.speedLimit;
-		}
-		
-		public College getDestination() {
-			return this.otherCollege;
-		}
 	}
 	
 	public class Path implements Comparable<Path> {
-		
 		private College college;
 		private College goal;
 		private int distanceTraveled;
@@ -242,25 +221,4 @@ public class Graph<T extends Comparable<? super T>> implements Iterable<Graph.Co
 		currentPath=path;
 		return path;
 	}
-	
-//	private class RandomIterator implements Iterator<Graph.College>{
-//		ArrayList<College> collegeList;
-//		
-//		public RandomIterator() {
-//			collegeList = new ArrayList<College>();
-//			collegeList.addAll(colleges.values());
-//		}
-//
-//		@Override
-//		public boolean hasNext() {
-//			return !collegeList.isEmpty();
-//		}
-//
-//		@Override
-//		public College next() {
-//			College temp = collegeList.get(0);
-//			collegeList.remove(0);
-//			return temp;
-//		}
-//	}
 }

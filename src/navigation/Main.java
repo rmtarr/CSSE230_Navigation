@@ -8,19 +8,15 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
 /**
- * The main class for CSSE230_Navigation.
+ * The main class for CSSE230_Navigation containing static void main()
  * 
  * This Main class constructs a NavigationFrame and configures it. 
  * 
- * @author snyderc1
- *
  */
-public class Main
-{
+public class Main {
 	private JFrame frame;
 
-	Main() throws IOException, UnsupportedAudioFileException, LineUnavailableException
-	{
+	Main() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		frame = new NavigationFrame();
 		frame.setTitle("College Navigator");
 
@@ -28,8 +24,7 @@ public class Main
 		frame.setVisible(true);
 	}
 
-	public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException
-	{
+	public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		new Main();
 	}
 }
