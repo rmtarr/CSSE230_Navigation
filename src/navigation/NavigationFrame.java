@@ -200,6 +200,7 @@ public class NavigationFrame extends JFrame {
 			public void mouseEntered(MouseEvent e) {}
 			public void mouseExited(MouseEvent e) {}
 		});
+		testAStar("IU","Ivy Tech", false);
 	}
 	
 	@Override
@@ -241,11 +242,11 @@ public class NavigationFrame extends JFrame {
 		return namesList;
 	}
 	
-//	public void testAStar(String start, String finish, boolean speedConsidered) {
-//		// TODO when all edges are added to graph
-//		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish, speedConsidered);
-//		for (Path p : path) {
-//			System.out.println(p.getCollegeName());
-//		}
-//	}
+	public void testAStar(String start, String finish, boolean speedConsidered) {
+		// TODO when all edges are added to graph
+		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish, speedConsidered);
+		for (Path p : path) {
+			System.out.println(p.getCollegeName());
+		}
+	}
 }
