@@ -25,9 +25,7 @@ public class Graph<T> {
 	}
 	
 	public void synthesizeEdges() {
-		for(College c : colleges.values()) {
-			c.synthesizeEdges();
-		}
+		for(College c : colleges.values()) c.synthesizeEdges();
 	}
 	
 	public void paint(Graphics2D g2d, double xScale, double yScale) {
@@ -47,7 +45,6 @@ public class Graph<T> {
 				g2d.drawLine((int)(xS*tempx), (int)(yS*tempy), (int)(xS*currentPath.get(i).college.x), (int)(yS*currentPath.get(i).college.y));
 				tempx = currentPath.get(i).college.x;
 				tempy = currentPath.get(i).college.y;
-				System.out.println(currentPath.get(i).getCollegeName());
 			}
 		}
 	}
@@ -97,10 +94,10 @@ public class Graph<T> {
 					//Arbitrary algorithm for making up a fictional speed for the edge
 					int xDiff = Math.abs(this.x - other.x);
 					int yDiff = Math.abs(this.y - other.y);
-					double speedLimit = 50+50*((xDiff-yDiff)/(xDiff+yDiff));
+					double speedLimit = 50.0+50.0*((double)(xDiff-yDiff)/(double)(xDiff+yDiff));
 					speedLimit = Math.min(speedLimit, maxSpeed);
 					speedLimit = Math.max(speedLimit, minSpeed);
-					
+
 					edges.add(new Edge(other, speedLimit));
 				}
 			}
@@ -124,8 +121,8 @@ public class Graph<T> {
 	}
 	
 	/**
-	 * Edge Class
-	 *
+	 * The Edge class represents a unidirectional edge going from one college to another.  
+	 * It contains the object of the neighbor college, and the speed limit along the edge
 	 */
 	public class Edge {
 		private double speedLimit;
@@ -193,9 +190,9 @@ public class Graph<T> {
 			return next.aStarSearch(q, speedConsidered);
 		}
 		
-		public T getCollegeName() {
-			return college.name;
-		}
+//		public T getCollegeName() {
+//			return college.name;
+//		}
 		
 		public int compareTo(Path other) {
 			if (this.cost == other.cost) return 0;
