@@ -52,6 +52,7 @@ public class NavigationFrame extends JFrame {
 	private double yScale; //The content needs to be scaled to fit any screen
 	private String currentDest;
 	private String currentSrc;
+	private String timeVsDist;
 
 	/** Auto Generated serialVersionUID */
 	private static final long serialVersionUID = 1185712731956834898L;
@@ -73,9 +74,10 @@ public class NavigationFrame extends JFrame {
 		audioClip.start();
 		//WOOOH
 		
-		//Make the default destination and source Rose-Hulman
+		//Make the default destination and source Rose-Hulman and distance
 		currentDest = "Rose-Hulman";
 		currentSrc = "Rose-Hulman";
+		timeVsDist = "Distance";
 		
 		//Get the Screen Size and make scale variables to handle screen scaling
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -125,6 +127,7 @@ public class NavigationFrame extends JFrame {
 		selection.setBackground(Color.GRAY);
 		JLabel label1 = new JLabel("Source College");
 		JLabel label2 = new JLabel("Destination College");
+		JLabel label3 = new JLabel("Time v Dist");
 		JComboBox src = new JComboBox(names.toArray());
 		src.setSelectedItem(currentSrc);
 		src.setToolTipText("Select the college you are coming from");
@@ -145,6 +148,17 @@ public class NavigationFrame extends JFrame {
 				currentDest = String.valueOf(dest.getSelectedItem());
 			}
 		});
+		String[] timeOrDist = {"Time", "Distance"};
+		JComboBox tvd = new JComboBox(timeOrDist);
+		tvd.setSelectedItem(timeVsDist);
+		tvd.setToolTipText("Select either Time or Distance");
+		tvd.setMaximumSize(new Dimension(100,20));
+		tvd.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				timeVsDist = String.valueOf(tvd.getSelectedItem());
+			}
+		});
 		GroupLayout layout = new GroupLayout(selection);
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -152,15 +166,20 @@ public class NavigationFrame extends JFrame {
 						.addComponent(src))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(label2)
-						.addComponent(dest)));
+						.addComponent(dest))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(label3)
+						.addComponent(tvd)));
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(label1)
-						.addComponent(label2))
+						.addComponent(label2)
+						.addComponent(label3))
 				.addGroup(
 						layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(src)
-						.addComponent(dest)));
+						.addComponent(dest)
+						.addComponent(tvd)));
 		selection.setLayout(layout);
 		infoPanel.add(selection);
 		
@@ -172,7 +191,10 @@ public class NavigationFrame extends JFrame {
 		GOButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				graph.shortestPath(currentSrc, currentDest, true);
+				if(timeVsDist.equals("Time"))
+					graph.shortestPath(currentSrc, currentDest, true);
+				else
+					graph.shortestPath(currentSrc, currentDest, false);
 				pack();
 				repaint();
 			}
