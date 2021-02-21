@@ -172,7 +172,7 @@ public class NavigationFrame extends JFrame {
 		GOButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				graph.shortestPath(currentSrc, currentDest, false);
+				graph.shortestPath(currentSrc, currentDest, true);
 				pack();
 				repaint();
 			}
@@ -200,7 +200,7 @@ public class NavigationFrame extends JFrame {
 			public void mouseEntered(MouseEvent e) {}
 			public void mouseExited(MouseEvent e) {}
 		});
-		testAStar("IU","Ivy Tech", true);
+//		testAStar("Trine University","USI", true);
 	}
 	
 	@Override

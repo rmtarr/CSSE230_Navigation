@@ -103,10 +103,10 @@ public class Graph<T> {
 			}
 		}
 		
-		public int straightLineDistance(College otherCollege) {
-			int x = this.x - otherCollege.x;
-			int y = this.y - otherCollege.y;
-			return (int)Math.sqrt(x*x + y*y);
+		public double straightLineDistance(College otherCollege) {
+			double x = this.x - otherCollege.x;
+			double y = this.y - otherCollege.y;
+			return Math.sqrt(x*x + y*y);
 		}
 		
 		private void paint(Graphics2D g2d, double xScale, double yScale) {
@@ -137,13 +137,13 @@ public class Graph<T> {
 	public class Path implements Comparable<Path> {
 		private College college;
 		private College goal;
-		private int costAccumulated;
-		private int totalCost;
+		private double costAccumulated;
+		private double totalCost;
 		private Path parent;
 		private boolean speedConsidered;
 		
-		public Path(College current, College goal, int costAccumulated, Path parent, boolean speedConsidered) {
-			int maxSpeedLimit = (speedConsidered) ? (int)Graph.maxSpeed : 1;
+		public Path(College current, College goal, double costAccumulated, Path parent, boolean speedConsidered) {
+			double maxSpeedLimit = (speedConsidered) ? Graph.maxSpeed : 1;
 			this.college = current;
 			this.goal = goal;
 			this.costAccumulated = costAccumulated;
@@ -155,12 +155,16 @@ public class Graph<T> {
 		public Path aStarSearch(PriorityQueue<Path> q) {
 			College c;
 			Path child;
-			int speedLimit;
-			int cost;
+			double speedLimit;
+			double cost;
+			ArrayList<College> collegesVisited = new ArrayList<>();
+			for (Path p : q) {
+				collegesVisited.add(p.college);
+			}
 			for (Edge e : college.edges) {
 				c = e.otherCollege;
-				if (parent == null || c!= parent.college) {
-					speedLimit = (speedConsidered) ? (int)e.speedLimit : 1;
+				if (parent == null || !collegesVisited.contains(c)) {
+					speedLimit = (speedConsidered) ? e.speedLimit : 1;
 					cost = college.straightLineDistance(c)/speedLimit;
 					child = new Path(c, goal, cost + costAccumulated, this, speedConsidered);
 					q.add(child);
