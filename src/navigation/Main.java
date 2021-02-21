@@ -1,8 +1,6 @@
 package navigation;
 
-import java.awt.Color;
 import java.io.IOException;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;

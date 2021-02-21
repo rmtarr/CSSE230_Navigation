@@ -32,14 +32,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import navigation.Graph.Path;
 
 /**
  * This class constructs and handles the JFrame containing the graph 
- * of the colleges in Indiana. It 
+ * of the colleges in Indiana.
  * 
  * 
  *
@@ -64,15 +66,22 @@ public class NavigationFrame extends JFrame {
 	 * @throws LineUnavailableException
 	 */
 	public NavigationFrame() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-		//JONESIN BABY
-		File audioFile = new File("lib/IndianaJones.WAV");
-		AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile.getAbsoluteFile());
-		AudioFormat format = audioStream.getFormat();
-		DataLine.Info info = new DataLine.Info(Clip.class, format);
-		Clip audioClip = (Clip) AudioSystem.getLine(info);
-		audioClip.open(audioStream);
-		audioClip.start();
-		//WOOOH
+		//Let the user choose if they want music
+		int musicOption = JOptionPane.showOptionDialog(this, 
+				"Would you like music to be played throughout your Indiana College Navigator experience?", 
+				"Music Option", JOptionPane.YES_NO_OPTION, 
+				JOptionPane.INFORMATION_MESSAGE, null, null, null);
+		if(musicOption == 0) {
+			//JONESIN BABY
+			File audioFile = new File("lib/IndianaJones.WAV");
+			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile.getAbsoluteFile());
+			AudioFormat format = audioStream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			Clip audioClip = (Clip) AudioSystem.getLine(info);
+			audioClip.open(audioStream);
+			audioClip.start();
+			//WOOOH
+		}
 		
 		//Make the default destination and source Rose-Hulman and distance
 		currentDest = "Rose-Hulman";
@@ -94,15 +103,11 @@ public class NavigationFrame extends JFrame {
 		ArrayList<String> names = importColleges(graph, "lib/colleges.csv");
 		
 		//GUI Setup
-		JPanel infoPanel = new JPanel();
-		infoPanel.setBackground(Color.GRAY);
-		infoPanel.setLayout(new FlowLayout());
-		infoPanel.setPreferredSize(new Dimension(600,5000));
-		this.add(infoPanel,BorderLayout.EAST);
+		
 		
 		//							  infoPanel
 		//  |------------------------------------|
-		//  |						|	title	 |
+		//  |Indiana	directions	|	title	 |
 		//  |						|------------|
 		//  |						|			 |
 		//  |						| selection  |
@@ -113,6 +118,14 @@ public class NavigationFrame extends JFrame {
 		//  |						|			 |
 		//  |						|------------|
 		//  |------------------------------------|
+		
+		
+		//Info Panel
+		JPanel infoPanel = new JPanel();
+		infoPanel.setBackground(Color.GRAY);
+		infoPanel.setLayout(new FlowLayout());
+		infoPanel.setPreferredSize(new Dimension(600,5000));
+		this.add(infoPanel,BorderLayout.EAST);
 		
 		//Title Panel
 		JPanel title = new JPanel();
@@ -186,20 +199,61 @@ public class NavigationFrame extends JFrame {
 		//GOPanel
 		JPanel GOPanel = new JPanel();
 		JButton GOButton = new JButton("GO!");
+		GOPanel.setBackground(Color.GRAY);
 		GOPanel.setMaximumSize(new Dimension(100,50));
 		GOPanel.add(GOButton);
+		infoPanel.add(GOPanel);
+		
+		//Directions Panel
+		JPanel directions = new JPanel();
+		directions.setBackground(Color.GRAY);
+		JTextArea label4 = new JTextArea("To change the source college, left click on any "
+				+ "college within the map. \nSimilarly, right click on any college to "
+				+ "change the destination. \n\nYou can also or use the dropdown boxes above "
+				+ "to set the source or \ndestination colleges\n\nSelect whether to optimize "
+				+ "for time or distance\nand then click the GO! button\n\nThe path that you "
+				+ "should take is drawn on the map in green");
+		label4.setEditable(false);
+		label4.setLineWrap(true);
+		label4.setBackground(Color.GRAY);
+		label4.setFont(new Font("Cooper Black",1,16));
+		//directions.setPreferredSize(new Dimension(600,500));
+		label4.setPreferredSize(new Dimension(600,300));
+		directions.add(label4);
+		infoPanel.add(directions);
+		
+		//Path Panel
+		JPanel path = new JPanel();
+		path.setLayout(new BorderLayout());
+		path.setBackground(Color.GRAY);
+		JLabel label5 = new JLabel("Current Path:");
+		label5.setFont(new Font("Cooper Black",1,20));
+		label5.setMinimumSize(new Dimension(600,25));
+		path.add(label5,BorderLayout.NORTH);
+		JTextArea label6 = new JTextArea("");
+		label6.setEditable(false);
+		label6.setLineWrap(true);
+		label6.setBackground(Color.GRAY);
+		label6.setFont(new Font("Cooper Black",1,20));
+		label6.setPreferredSize(new Dimension(600,300));
+		path.add(label6,BorderLayout.SOUTH);
+		infoPanel.add(path);
+		
 		GOButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(timeVsDist.equals("Time"))
-					graph.shortestPath(currentSrc, currentDest, true);
-				else
-					graph.shortestPath(currentSrc, currentDest, false);
-				pack();
+				label6.setText("");
+				LinkedList<String> path = new LinkedList<String>();
+				if(timeVsDist.equals("Time")) path = graph.shortestPath(currentSrc, currentDest, true);
+				else path = graph.shortestPath(currentSrc, currentDest, false);
+				label6.setText(path.pop());
+				for(int x = 0;x<path.size();x++) {
+					label6.setText(label6.getText() + ", " + path.pop());
+				}
+				//pack();
 				repaint();
 			}
 		});
-		infoPanel.add(GOPanel);
 		
 		//Add the mouse listener to handle clicking on colleges
 		this.addMouseListener(new MouseListener() {
@@ -264,11 +318,11 @@ public class NavigationFrame extends JFrame {
 		return namesList;
 	}
 	
-	public void testAStar(String start, String finish, boolean speedConsidered) {
-		// TODO when all edges are added to graph
-		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish, speedConsidered);
-		for (Path p : path) {
-			System.out.println(p.getCollegeName());
-		}
-	}
+//	public void testAStar(String start, String finish, boolean speedConsidered) {
+//		// TODO when all edges are added to graph
+//		LinkedList<Graph<String>.Path> path = graph.shortestPath(start, finish, speedConsidered);
+//		for (Path p : path) {
+//			System.out.println(p.getCollegeName());
+//		}
+//	}
 }

@@ -2,10 +2,8 @@ package navigation;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -188,16 +186,18 @@ public class Graph<T> {
 
 	}
 	
-	public LinkedList<Path> shortestPath(T start, T finish, boolean speedConsidered) {
+	public LinkedList<T> shortestPath(T start, T finish, boolean speedConsidered) {
 		PriorityQueue<Path> q = new PriorityQueue<>();
 		Path begin = new Path(colleges.get(start), colleges.get(finish), 0, null, speedConsidered);
 		Path college = begin.aStarSearch(q);
 		LinkedList<Path> path = new LinkedList<>();
+		LinkedList<T> result = new LinkedList<T>();
 		while (college != null) {
 			path.addFirst(college);
+			result.addFirst(college.college.name);
 			college = college.parent;
 		}
-		currentPath=path;
-		return path;
+		currentPath = path;
+		return result;
 	}
 }
